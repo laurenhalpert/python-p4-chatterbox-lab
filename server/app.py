@@ -14,6 +14,11 @@ migrate = Migrate(app, db)
 
 db.init_app(app)
 
+# @app.before_request
+# def set_content_type():
+#     if not request.headers.get('Content-Type'):
+#         request.headers['Content-Type'] = 'application/json'
+
 @app.route('/messages', methods = ["GET", "POST"])
 def messages():
     if request.method == "GET":
@@ -23,7 +28,7 @@ def messages():
             jsonify(messages_serialized),
             200
         )
-        response.headers['Content-Type'] = 'application/json'
+        
     elif request.method == "POST":
         data = request.get_json()
         new_message = Message(
@@ -37,7 +42,7 @@ def messages():
             jsonify(message_dict),
             201
         )
-        response.headers['Content-Type'] = 'application/json'
+       
     return response
 
 @app.route('/messages/<int:id>', methods = ["PATCH", "DELETE"])
@@ -54,7 +59,7 @@ def messages_by_id(id):
             jsonify(message_dict),
             200
         )
-        response.headers['Content-Type'] = 'application/json'
+        
     elif request.method == "DELETE":
         db.session.delete(message)
         db.session.commit()
@@ -62,7 +67,7 @@ def messages_by_id(id):
             jsonify({'deleted': True}),
             200,
         )
-        response.headers['Content-Type'] = 'application/json'
+        
     return response
 if __name__ == '__main__':
     app.run(port=5555)
